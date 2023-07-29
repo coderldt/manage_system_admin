@@ -1,0 +1,95 @@
+import { useEffect, useState } from 'react'
+import { useRoutes, redirect } from 'react-router-dom'
+import NormalLayout from '@/layout/normal'
+import React from 'react'
+import BlankLayout from '@/layout/blank'
+import ErrorLayout from '@/layout/error'
+import { useAppState } from '@/hooks'
+import type { Permission as PermissionType } from '@/types/info'
+
+import Home from '@/views/home'
+import Login from '@/views/login'
+import CallPlanning from '@/views/callPlanning'
+
+const User = React.lazy(() => import('@/views/sys/user'))
+const Permission = React.lazy(() => import('@/views/sys/permission'))
+const Role = React.lazy(() => import('@/views/sys/role'))
+const NoFind = React.lazy(() => import('@/views/error/404'))
+const NoPermission = React.lazy(() => import('@/views/error/402'))
+
+const Routes = () => {
+  const info = useAppState((state) => state.info.info)
+  const [permission, setPermission] = useState<PermissionType[]>([])
+
+  useEffect(() => {
+    const getPermission = info && info.permission || []
+    setPermission(getPermission)
+  }, [info])
+
+  const checkUserRole = (path: string) => {
+    return permission.find(permission => permission.path === path)
+  }
+
+  const requireRole = (component: JSX.Element, path: string) => {
+    return checkUserRole(path) ? component : <NoPermission />
+  }
+
+  return useRoutes([
+    {
+      path: '',
+      element: <NormalLayout />,
+      children: [
+        {
+          path: '',
+          element: requireRole(<Home />, '/')
+        },
+        {
+          path: 'call-planning',
+          element: <CallPlanning />
+        },
+        {
+          path: "system",
+          children: [
+            {
+              path: 'user',
+              element: <User />
+            },
+            {
+              path: 'menu',
+              element: <Permission />
+            },
+            {
+              path: 'role',
+              element: <Role />
+            },
+          ]
+        },
+      ]
+    },
+    {
+      path: '',
+      element: <BlankLayout />,
+    },
+    {
+      path: '',
+      element: <ErrorLayout />,
+      children: [
+        {
+          path: '404',
+          element: <NoFind />
+        },
+        {
+          path: '402',
+          element: <NoPermission />
+        }
+      ]
+    },
+    {
+      path: '/login',
+      element: <Login />
+    }
+  ])
+}
+
+
+export default Routes

@@ -1,0 +1,1 @@
+export const INLINE_FORM_ITEM_WIDTH = 250
