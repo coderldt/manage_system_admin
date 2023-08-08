@@ -16,6 +16,7 @@ const Permission = React.lazy(() => import('@/views/sys/permission'))
 const Role = React.lazy(() => import('@/views/sys/role'))
 const NoFind = React.lazy(() => import('@/views/error/404'))
 const NoPermission = React.lazy(() => import('@/views/error/402'))
+const Banding = React.lazy(() => import('@/views/banding'))
 
 const Routes = () => {
   const info = useAppState((state) => state.info.info)
@@ -87,6 +88,10 @@ const Routes = () => {
     {
       path: '/login',
       element: <Login />
+    },
+    {
+      path: '/banding',
+      element: <Banding />
     }
   ])
 }
