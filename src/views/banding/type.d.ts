@@ -1,6 +1,7 @@
 export interface SearchForm {
   brandCount: number
   isDisruption: 1 | 2
+  sexBalance: 1 | 2
 }
 
 export interface StudentData {

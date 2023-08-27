@@ -1,8 +1,6 @@
 .menu_icon {
   font-size: 19px;
 }
-
-// 二级菜单选中为蓝色的 bug
 .ant-menu-title-content a {
   color: #fff;
 }

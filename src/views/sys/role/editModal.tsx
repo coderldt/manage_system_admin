@@ -28,7 +28,7 @@ const EditModal: React.FC<Props> = ({ mode, data, btnProps, refrensh }) => {
   const getDetail = async () => {
     const res = await ajax.post(request.sys.role.detail, { role_id: data?.role_id })
     if (res.code === Code.SUCCESS) {
-      form.setFieldsValue(res.data)
+      form.setFieldsValue(res.data as SearchType)
     }
   }
 

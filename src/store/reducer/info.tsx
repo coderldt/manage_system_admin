@@ -9,8 +9,7 @@ const initialState = {
 } as { info: Info }
 
 export const getInfo = createAsyncThunk('info/getInfo', async () => {
-  const res = await ajax.post<Info>(request.sys.user.getUserInfo, { id: 123 }).catch((error) => {
-  })
+  const res = await ajax.post<Info>(request.sys.user.getUserInfo, { id: 123 })
   if (res && res.code === Code.SUCCESS) {
     return res.data
   }

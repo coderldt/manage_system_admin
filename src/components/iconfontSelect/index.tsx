@@ -36,9 +36,11 @@ const IconfontSelect: React.FC<Props> = ({ btnProps, btnTitle = '选择图标', 
   }
 
   const handleSelect = (iconfont: string) => {
-    let finalValue = []
+    let finalValue: string[] = []
     if (mode === Mode.single) {
-      finalValue = [iconfont]
+      if (!selectVals.includes(iconfont)) {
+        finalValue = [iconfont]
+      }
       setSelectVals(finalValue)
     } else {
       if (selectVals.includes(iconfont)) {

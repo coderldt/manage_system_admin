@@ -1,6 +1,5 @@
 import axios, { InternalAxiosRequestConfig } from 'axios'
 import { message } from 'antd'
-import { AxiosResponse } from 'axios'
 import { Code } from '@/enum'
 import { getStore } from './local'
 

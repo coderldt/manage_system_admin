@@ -10,16 +10,6 @@ import { useAppDispath, useAppState } from '@/hooks'
 import './index.less'
 const { Header, Sider, Content } = Layout
 
-const headerStyle: React.CSSProperties = {
-  color: '#fff',
-  height: 64,
-  paddingInline: 50,
-  lineHeight: '64px',
-  backgroundColor: '#fff',
-  paddingLeft: '0',
-  paddingRight: '0'
-}
-
 const footerStyle: React.CSSProperties = {
   textAlign: 'center',
   height: 'auto',

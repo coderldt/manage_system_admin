@@ -1,40 +1,35 @@
-import { Button, Space } from "antd"
+import { Button, Form, Input, Space } from "antd"
+import { INLINE_FORM_ITEM_WIDTH } from "@/config"
+import type { SearchType } from './types'
 
 interface SearchProps {
-  handleExpand: (type?: 'all' | 'clean') => void
+  handleSearch: (params: SearchType) => void
+  handleReset: (params: SearchType) => void
 }
 
 const Search: React.FC<SearchProps> = (props) => {
-  // const [form] = Form.useForm()
+  const [form] = Form.useForm()
 
-  //   const layout = {
-  //     labelCol: { span: 4 },
-  //   }
-  //
-  //   const tailLayout = {
-  //     wrapperCol: { offset: 8, span: 16 },
-  //   }
-  //
-  //   const onFinish = (values: SearchType) => {
-  //     // props.handleSearch(values)
-  //   }
-  //
-  //   const onReset = () => {
-  //     form.resetFields()
-  //     // props.handleReset({})
-  //   }
+  const layout = {
+    labelCol: { span: 4 },
+  }
+
+  const tailLayout = {
+    wrapperCol: { offset: 8, span: 16 },
+  }
+
+  const onFinish = (values: SearchType) => {
+    props.handleSearch(values)
+  }
+
+  const onReset = () => {
+    form.resetFields()
+    props.handleReset({})
+  }
 
   return (
     <>
-      <Space>
-        <Button onClick={() => props.handleExpand('all')}>
-          全部展开
-        </Button>
-        <Button onClick={() => props.handleExpand('clean')}>
-          全部折叠
-        </Button>
-      </Space>
-      {/* <Form
+      <Form
         {...layout}
         form={form}
         layout="inline"
@@ -49,15 +44,15 @@ const Search: React.FC<SearchProps> = (props) => {
         </Form.Item>
         <Form.Item {...tailLayout}>
           <Space>
-            <Button type="primary" onClick={onReset}>
-              全部展开
+            <Button type="primary" htmlType="submit">
+              搜索
             </Button>
             <Button htmlType="button" onClick={onReset}>
-              全部折叠
+              重置
             </Button>
           </Space>
         </Form.Item>
-      </Form> */}
+      </Form>
     </>
   )
 }

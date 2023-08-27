@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useRoutes, redirect } from 'react-router-dom'
+import { useRoutes } from 'react-router-dom'
 import NormalLayout from '@/layout/normal'
 import React from 'react'
 import BlankLayout from '@/layout/blank'
@@ -9,14 +9,14 @@ import type { Permission as PermissionType } from '@/types/info'
 
 import Home from '@/views/home'
 import Login from '@/views/login'
-import CallPlanning from '@/views/callPlanning'
 
 const User = React.lazy(() => import('@/views/sys/user'))
+const Config = React.lazy(() => import('@/views/sys/config'))
 const Permission = React.lazy(() => import('@/views/sys/permission'))
 const Role = React.lazy(() => import('@/views/sys/role'))
 const NoFind = React.lazy(() => import('@/views/error/404'))
 const NoPermission = React.lazy(() => import('@/views/error/402'))
-const Banding = React.lazy(() => import('@/views/banding'))
+// const Banding = React.lazy(() => import('@/views/banding'))
 
 const Routes = () => {
   const info = useAppState((state) => state.info.info)
@@ -45,10 +45,6 @@ const Routes = () => {
           element: requireRole(<Home />, '/')
         },
         {
-          path: 'call-planning',
-          element: <CallPlanning />
-        },
-        {
           path: "system",
           children: [
             {
@@ -62,6 +58,10 @@ const Routes = () => {
             {
               path: 'role',
               element: <Role />
+            },
+            {
+              path: 'config',
+              element: <Config />
             },
           ]
         },
@@ -89,10 +89,10 @@ const Routes = () => {
       path: '/login',
       element: <Login />
     },
-    {
-      path: '/banding',
-      element: <Banding />
-    }
+    // {
+    //   path: '/banding',
+    //   element: <Banding />
+    // }
   ])
 }
 

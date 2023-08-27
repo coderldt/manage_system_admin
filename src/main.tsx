@@ -1,4 +1,3 @@
-import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { ConfigProvider } from 'antd'
 import zhCn from 'antd/locale/zh_CN'
@@ -14,7 +13,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   // <React.StrictMode>
   <ConfigProvider locale={zhCn} componentSize='middle'>
     <Provider store={store}>
-      <BrowserRouter>
+      <BrowserRouter basename='/system'>
         <Routes />
         <Outlet />
       </BrowserRouter>

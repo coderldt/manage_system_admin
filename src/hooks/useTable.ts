@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
-import type { CommonTableListRes, Pages } from '@/types'
+import type { Pages } from '@/types'
 import ajax from '@/tools/axios'
-import useRequest from './useRequest'
 import { Code } from '@/enum'
 
 interface Params {
@@ -66,7 +65,6 @@ const useTable = (props: Props, options: Options = { immediate: true }): Result 
     setIsLoading(true)
 
     const res = await ajax[method](url, params)
-    console.log("🚀 ~ file: useTable.ts:68 ~ getList ~ res:", res)
 
     if (res.code === Code.SUCCESS) {
       // let data = []
@@ -77,8 +75,7 @@ const useTable = (props: Props, options: Options = { immediate: true }): Result 
         setPages(result.pages)
 
       } else {
-        const { page, pageSize, total, list } = res.data
-        console.log("🚀 ~ file: useTable.ts:79 ~ getList ~ page, pageSize, total, list:", total, list)
+        const { page, pageSize, total, list } = res.data as { page: number, pageSize: number, total: number, list: never[] }
 
         setData(list)
         setPages({
@@ -101,9 +98,6 @@ const useTable = (props: Props, options: Options = { immediate: true }): Result 
 
   const handleSearch = (params: Params) => {
     getList({ form: params, pages: { page: 1 } })
-  }
-  const hadnleReset = () => {
-    getList({ pages: { page: 1 } })
   }
   const handlePageChange = (pages: Omit<Pages, 'total'> = {}) => {
     getList({ pages })

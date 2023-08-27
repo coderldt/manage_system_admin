@@ -1,13 +1,7 @@
-import { useState, useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
-import { Button, Layout } from 'antd'
-import { MenuFoldOutlined, MenuUnfoldOutlined, UploadOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons'
-import Menu from '@/components/menu'
-import Logo from '@/components/logo'
-import { getInfo } from '@/store/reducer/info'
-import { useAppDispath } from '@/hooks'
+import { Layout } from 'antd'
 import './index.less'
-const { Header, Sider, Content } = Layout
+const { Header, Content } = Layout
 
 const headerStyle: React.CSSProperties = {
   color: '#fff',
