@@ -4,7 +4,7 @@ import { resolve } from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: 'system',
+  base: 'systemAdmin',
   plugins: [react()],
   resolve: {
     extensions: [".js", ".ts", ".tsx", ".jsx"],
