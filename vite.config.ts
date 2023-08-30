@@ -14,8 +14,8 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/api': {
-        target: 'http://127.0.0.1:8009',
+      '/systemApi': {
+        target: 'http://127.0.0.1:8010',
         // target: 'http://127.0.0.1:7001',
         changeOrigin: true
       }

@@ -50,7 +50,7 @@ const Role = () => {
                   blockNode={true}
                   treeData={data}
                   selectable={false}
-                  titleRender={(nodeData: Columns) =>
+                  titleRender={(nodeData) =>
                     <>
                       <div className='role-item'>
                         <div className={`role-name ${currentRole === nodeData.role_id ? 'role_name_active' : ''}`} onClick={() => handleClick(nodeData)}>{nodeData.role_name}</div>

@@ -32,7 +32,7 @@ axios.interceptors.response.use(
         if (response.data.code == Code.INVALID_TOKEN) {
           message.warning('登录状态已失效，请登录后再来访问')
           setTimeout(() => {
-            window.location.href = '/login'
+            window.location.href = '/systemAdmin/login'
           }, 2000)
         }
         if (response.data.code == Code.NO_PERMISSION) {

@@ -61,11 +61,15 @@ const RolesTree: React.FC<Props> = ({ role_id }) => {
     }
   }
 
-  const onCheck = (checkedKeys: {
+  const onCheck = (checkedKeys: (React.Key[] | {
     checked: React.Key[]
     halfChecked: React.Key[]
-  }) => {
-    setRolePermission(checkedKeys.checked)
+  })) => {
+    if (Array.isArray(checkedKeys)) {
+      setRolePermission(checkedKeys)
+    } else {
+      setRolePermission(checkedKeys.checked)
+    }
   }
 
   const onExpand = (keys: React.Key[]) => {

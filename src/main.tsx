@@ -13,7 +13,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   // <React.StrictMode>
   <ConfigProvider locale={zhCn} componentSize='middle'>
     <Provider store={store}>
-      <BrowserRouter basename='/system'>
+      <BrowserRouter basename='/systemAdmin'>
         <Routes />
         <Outlet />
       </BrowserRouter>
