@@ -34,6 +34,19 @@ const apiUrl = {
       delete: `${BASE_URL}/sys/role/del`,
       addRoleMenus: `${BASE_URL}/sys/role/addRoleMenus`,
     }
+  },
+  pixel: {
+    notice: {
+      list: `${BASE_URL}/pixel/notice/list`,
+      add: `${BASE_URL}/pixel/notice/add`,
+      update: `${BASE_URL}/pixel/notice/update`,
+      del: `${BASE_URL}/pixel/notice/del`,
+      detail: `${BASE_URL}/pixel/notice/detail`,
+    },
+    pageConfig: {
+      list: `${BASE_URL}/pixel/pageConfig/list`,
+      changeStatus: `${BASE_URL}/pixel/pageConfig/changeStatus`,
+    }
   }
 }
 

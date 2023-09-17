@@ -14,6 +14,10 @@ const User = React.lazy(() => import('@/views/sys/user'))
 const Config = React.lazy(() => import('@/views/sys/config'))
 const Permission = React.lazy(() => import('@/views/sys/permission'))
 const Role = React.lazy(() => import('@/views/sys/role'))
+
+const Notice = React.lazy(() => import('@/views/pixel/notice'))
+const PageConfig = React.lazy(() => import('@/views/pixel/pageConfig'))
+
 const NoFind = React.lazy(() => import('@/views/error/404'))
 const NoPermission = React.lazy(() => import('@/views/error/402'))
 // const Banding = React.lazy(() => import('@/views/banding'))
@@ -62,6 +66,19 @@ const Routes = () => {
             {
               path: 'config',
               element: <Config />
+            },
+          ]
+        },
+        {
+          path: "pixel",
+          children: [
+            {
+              path: 'notice',
+              element: <Notice />
+            },
+            {
+              path: 'pageConfig',
+              element: <PageConfig />
             },
           ]
         },
