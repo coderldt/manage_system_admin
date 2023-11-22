@@ -1,12 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import type { Info } from '@/types/info'
+import type { Info, InfoStoreState } from '@/types/info'
 import ajax from '@/tools/axios'
 import request from '@/request'
 import { Code } from '@/enum'
 
 const initialState = {
-  info: {}
-} as { info: Info }
+  info: {},
+  rePasswordShow: false,
+} as InfoStoreState
 
 export const getInfo = createAsyncThunk('info/getInfo', async () => {
   const res = await ajax.post<Info>(request.sys.user.getUserInfo, { id: 123 })

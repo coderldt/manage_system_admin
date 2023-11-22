@@ -54,9 +54,9 @@ const NormalLayout = () => {
             <div className="normal-view">
               <Outlet />
             </div>
-            <div id="footer" style={footerStyle}>
+            {/* <div id="footer" style={footerStyle}>
               Ant Design ©2023 Created by Ant UED
-            </div>
+            </div> */}
           </Content>
         </Layout>
       </Layout>
