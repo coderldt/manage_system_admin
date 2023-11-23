@@ -78,10 +78,12 @@ export const findSepadTogeSexIndex = (columns: XlexColumn[]) => {
   const separateIndex = columns.findIndex(colunm => colunm.title.includes('separate-class'))
   const togetherIndex = columns.findIndex(colunm => colunm.title.includes('together-class'))
   const sexIndex = columns.findIndex(colunm => colunm.title.includes('性别'))
+  const nameIndex = columns.findIndex(colunm => colunm.title.includes('姓名'))
 
   return {
     separateIndex,
     togetherIndex,
-    sexIndex
+    sexIndex,
+    nameIndex,
   }
 }

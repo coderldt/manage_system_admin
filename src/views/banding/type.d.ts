@@ -30,8 +30,28 @@ export interface UploadFileProps {
   xlsxData: StudentColunm[]
   saveTableData: SaveTableData
 }
+export interface TableConfig {
+  separateIndex: number
+  togetherIndex: number
+  sexIndex: number
+  nameIndex: number
+}
 
 // formConfig
 export interface FormConfigProps {
   saveFormConfig: (SearchForm) => void
+}
+
+// ResultAdjust
+export interface ResultAdjustProps {
+  tableConfig: TableConfig
+  result: StudentColunm[][]
+}
+
+export interface MoveModalProps {
+  show: boolean
+  tableConfig: TableConfig
+  classIndex: number
+  studentIndex: number
+  data: StudentColunm[][]
 }
