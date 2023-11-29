@@ -35,6 +35,7 @@ const Home = () => {
   })
 
   const saveTableData: SaveTableData = (xlsxColumns, xlsxData) => {
+    console.log('🚀 ~ file: index.tsx:38 ~ Home ~ xlsxData:', xlsxData)
     setColumns(xlsxColumns)
     setTableData(xlsxData)
   }
@@ -46,6 +47,8 @@ const Home = () => {
 
   const [result, setResult] = useState<StudentColunm[][]>([])
   const brand = () => {
+    console.log('tableData', tableData)
+
     if (!tableData.length) {
       return message.error('数据来源不能为空')
     }
@@ -64,8 +67,6 @@ const Home = () => {
     const { separateIndex, togetherIndex, sexIndex, nameIndex } = findSepadTogeSexIndex(columns)
     setTableConfig({ separateIndex, togetherIndex, sexIndex, nameIndex })
     console.log('🚀 ~ file: index.tsx:57 ~ brand ~ separateIndex, togetherIndex, sexIndex:', separateIndex, togetherIndex, sexIndex, nameIndex)
-
-    console.log(`学生总数${targetDataSource.length}`)
 
     // 需要特殊处理的学生
     const specStudents = targetDataSource.filter(i => i[separateIndex] || i[togetherIndex])
@@ -119,11 +120,8 @@ const Home = () => {
       })
     })
 
-    console.log(res, 'res')
-
     // 获取剩下的学生
     let randomStudents = targetDataSource.filter(i => !i[separateIndex] && !i[togetherIndex])
-    console.log("🚀 ~ 获取剩下的学生:", randomStudents)
 
     const avgStudents = Math.ceil(targetDataSource.length / formConfig.brandCount)
 
@@ -243,15 +241,16 @@ const Home = () => {
               saveFormConfig={saveFormConfig}
             />
           </div>
-          <div
-            className="result-adjust"
-            style={{ display: current === 2 ? 'block' : 'none' }}
-          >
-            <ResultAdjust
-              tableConfig={tableConfig}
-              result={result}
-            />
-          </div>
+          {
+            current === 2 && <div
+              className="result-adjust"
+            >
+              <ResultAdjust
+                tableConfig={tableConfig}
+                result={result}
+              />
+            </div>
+          }
         </div>
         <div className='control'>
           <Space>

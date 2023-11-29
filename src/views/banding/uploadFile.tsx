@@ -13,7 +13,7 @@ const UploadFile: React.FC<UploadFileProps> = ({
   const handleChange: UploadProps['onChange'] = async (e) => {
     const { xlsxColumns, xlsxData } = await readXlsx(e.file)
 
-    saveTableData(xlsxColumns, xlsxData)
+    saveTableData(xlsxColumns, xlsxData.map((i, index) => ({ ...i, 'student_id': `student_${index}` })))
   }
 
   return (

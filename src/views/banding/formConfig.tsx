@@ -34,7 +34,7 @@ const FormConfig: React.FC<FormConfigProps> = ({ saveFormConfig }) => {
           name="control-hooks"
           onFinish={onFinish}
         >
-          <Form.Item name="brandCount" initialValue={2} label="班级数量" rules={[{ required: true }]}>
+          <Form.Item name="brandCount" initialValue={4} label="班级数量" rules={[{ required: true }]}>
             <Input placeholder='请输入输入班级数量' style={{ width: `${INLINE_FORM_ITEM_WIDTH}px` }}></Input>
           </Form.Item>
           <Form.Item name="isDisruption" initialValue={1} label="是否打乱" rules={[{ required: true }]}>

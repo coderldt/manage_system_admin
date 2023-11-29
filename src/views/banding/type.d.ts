@@ -13,7 +13,7 @@ export interface StudentData {
 
 export interface StudentColunm {
   // id: number
-  [key: number]: string | number
+  [key: number | string]: string | number
 }
 
 export interface XlexColumn {
@@ -49,9 +49,10 @@ export interface ResultAdjustProps {
 }
 
 export interface MoveModalProps {
-  show: boolean
+  currentClass: number
+  targetClass: number
+  otherClass: number[]
+  student: StudentColunm
   tableConfig: TableConfig
-  classIndex: number
-  studentIndex: number
-  data: StudentColunm[][]
+  students: StudentColunm[]
 }
