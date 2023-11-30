@@ -178,8 +178,8 @@ const ResultAdjust: React.FC<ResultAdjustProps> = ({
           {
             dataCopy.map((item, index) => {
               return <>
-                <Col xs={24} sm={24} md={12} lg={12} xl={8} key={index}>
-                  <div className="class">
+                <Col xs={24} sm={24} md={12} lg={12} xl={8}>
+                  <div className="class" key={index}>
                     <div className="class-name">{`第${index + 1}班`}</div>
                     <div className="count">
                       <div className="total-count">总人数：{item.length}</div>
@@ -227,7 +227,7 @@ const ResultAdjust: React.FC<ResultAdjustProps> = ({
         </Modal>
       </div>
       <div>
-        <Button onClick={exportBand}>导出</Button>
+        <Button type='primary' onClick={exportBand}>导出</Button>
       </div>
     </>
   )

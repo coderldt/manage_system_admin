@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { Button, Space, Steps, message } from 'antd'
+import { Button, FormInstance, Space, Steps, message } from 'antd'
 import UploadFile from './components/uploadFile.tsx'
 import FormConfig from './components/formConfig.tsx'
 import ResultAdjust from './components/resultAdjust.tsx'
@@ -34,14 +34,14 @@ const Home = () => {
     nameIndex: 0,
   })
 
-  const formConfigRef = useRef(null)
+  const formConfigRef = useRef<FormInstance<SearchForm>>(null)
 
   const saveTableData: SaveTableData = (xlsxColumns, xlsxData) => {
     setColumns(xlsxColumns)
     setTableData(xlsxData)
   }
 
-  const [formConfig, setFormConfig] = useState<SearchForm>()
+  // const [formConfig, setFormConfig] = useState<SearchForm>()
 
   const [result, setResult] = useState<XlsxData[][]>([])
 
@@ -55,19 +55,23 @@ const Home = () => {
         break
 
       case 1:
-        brandClass(tableData, columns, (formConfigRef.current.getFieldsValue() as SearchForm)).then(
-          res => {
-            setTableConfig(res.data.tableConfig)
-            setResult(res.data.result)
+        if (formConfigRef.current) {
+          brandClass(tableData, columns, (formConfigRef.current.getFieldsValue() as SearchForm)).then(
+            res => {
+              setTableConfig(res.data.tableConfig)
+              setResult(res.data.result)
 
-            setCurrent(current + 1)
-          },
-          (err) => {
-            if (err.status === 'error') {
-              message.error(err.msg)
+              setCurrent(current + 1)
+            },
+            (err) => {
+              if (err.status === 'error') {
+                message.error(err.msg)
+              }
             }
-          }
-        )
+          )
+        } else {
+          message.warning('请稍后再试')
+        }
         break
       case 2:
         break

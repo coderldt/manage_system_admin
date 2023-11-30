@@ -33,10 +33,6 @@ export interface SearchForm {
   sexBalance: 1 | 2
 }
 
-export interface FormConfigRefProps {
-  abc: string
-}
-
 // resultAdjust
 export interface ResultAdjustProps {
   tableConfig: TableConfig

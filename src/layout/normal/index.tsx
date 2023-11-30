@@ -10,14 +10,6 @@ import { useAppDispath, useAppState } from '@/hooks'
 import './index.less'
 const { Header, Sider, Content } = Layout
 
-const footerStyle: React.CSSProperties = {
-  textAlign: 'center',
-  height: 'auto',
-  marginTop: '20px',
-  color: '#878282',
-  padding: '10px'
-}
-
 const NormalLayout = () => {
   const info = useAppState((state) => state.info.info)
   const [collapsed, setCollapsed] = useState(false)
@@ -54,9 +46,6 @@ const NormalLayout = () => {
             <div className="normal-view">
               <Outlet />
             </div>
-            {/* <div id="footer" style={footerStyle}>
-              Ant Design ©2023 Created by Ant UED
-            </div> */}
           </Content>
         </Layout>
       </Layout>

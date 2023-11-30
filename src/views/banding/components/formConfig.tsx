@@ -1,9 +1,9 @@
 import { forwardRef } from 'react'
-import { Form, Input, Radio } from 'antd'
+import { Form, FormInstance, Input, Radio } from 'antd'
 import { INLINE_FORM_ITEM_WIDTH } from '@/config'
-import { FormConfigRefProps, SearchForm } from '../type.d'
+import { SearchForm } from '../type.d'
 
-const FormConfig = forwardRef<FormConfigRefProps>((_, ref) => {
+const FormConfig = forwardRef<FormInstance<SearchForm>>((_, ref) => {
   const [form] = Form.useForm<SearchForm>()
   const layout = {
     labelCol: { span: 4 },
