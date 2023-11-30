@@ -1,35 +1,4 @@
-export interface SearchForm {
-  brandCount: number
-  isDisruption: 1 | 2
-  sexBalance: 1 | 2
-}
-
-export interface StudentData {
-  id: number
-  key: number
-  title: string
-  dataIndex: number
-}
-
-export interface StudentColunm {
-  // id: number
-  [key: number | string]: string | number
-}
-
-export interface XlexColumn {
-  key: number
-  title: string
-  dataIndex: number
-  id: number
-}
-
-// uploadFile
-export type SaveTableData = (xlsxColumns: StudentData[], xlsxData: StudentColunm[]) => void
-export interface UploadFileProps {
-  xlsxColumns: StudentData[]
-  xlsxData: StudentColunm[]
-  saveTableData: SaveTableData
-}
+// index
 export interface TableConfig {
   separateIndex: number
   togetherIndex: number
@@ -37,22 +6,49 @@ export interface TableConfig {
   nameIndex: number
 }
 
-// formConfig
-export interface FormConfigProps {
-  saveFormConfig: (SearchForm) => void
+// uploadFile
+export interface XlsxColumn {
+  id: number
+  key: number
+  title: string
+  dataIndex: number
 }
 
-// ResultAdjust
+export interface XlsxData {
+  [key: number]: string | number
+  student_id: string
+}
+
+export type SaveTableData = (xlsxColumns: XlsxColumn[], xlsxData: XlsxData[]) => void
+export interface UploadFileProps {
+  xlsxColumns: XlsxColumn[]
+  xlsxData: XlsxData[]
+  saveTableData: SaveTableData
+}
+
+// searchForm
+export interface SearchForm {
+  brandCount: number
+  isDisruption: 1 | 2
+  sexBalance: 1 | 2
+}
+
+export interface FormConfigRefProps {
+  abc: string
+}
+
+// resultAdjust
 export interface ResultAdjustProps {
   tableConfig: TableConfig
-  result: StudentColunm[][]
+  exportColumns: XlsxColumn[]
+  result: XlsxData[][]
 }
 
 export interface MoveModalProps {
-  currentClass: number
-  targetClass: number
-  otherClass: number[]
-  student: StudentColunm
-  tableConfig: TableConfig
-  students: StudentColunm[]
+  currentClass: number // 当前学生所在班级
+  targetClass: number // 跳转目标班级
+  otherClass: number[] // 其他班级数
+  student: XlsxData // 移动当前学生
+  tableConfig: TableConfig // 学生信息index
+  students: (XlsxData & { isMove: '1' | '0' })[] // 所在一起班级学生
 }

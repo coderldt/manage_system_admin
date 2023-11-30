@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Col, Empty, Form, Modal, Radio, Row, Select, Table, Upload, message } from 'antd'
-import { MoveModalProps, ResultAdjustProps, StudentColunm, TableConfig } from './type.d'
+import { Button, Col, Form, Modal, Radio, Row, Select, Table, message } from 'antd'
+import { MoveModalProps, ResultAdjustProps, XlsxData } from '../type.d'
+import { writeXlsx } from '../tool'
 const { Column } = Table
 
 const MoveForm: React.FC<MoveModalProps> = (params) => {
-  const { student, currentClass, tableConfig, students, otherClass } = params
+  const { student, tableConfig, students, otherClass } = params
   return (
     <>
       <Form
@@ -12,7 +13,6 @@ const MoveForm: React.FC<MoveModalProps> = (params) => {
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
         style={{ maxWidth: 600 }}
-        initialValues={{ remember: true }}
         autoComplete="off"
       >
         <Form.Item
@@ -39,7 +39,7 @@ const MoveForm: React.FC<MoveModalProps> = (params) => {
               title="是否一起转移"
               dataIndex="x"
               key="x"
-              render={(_, record) => (
+              render={(_, record: XlsxData & { isMove: '1' | '0' }) => (
                 <>
                   <Radio.Group defaultValue='1' onChange={(e) => { record.isMove = e.target.value }}>
                     <Radio value="1"> 是 </Radio>
@@ -67,35 +67,17 @@ const MoveForm: React.FC<MoveModalProps> = (params) => {
 
 const ResultAdjust: React.FC<ResultAdjustProps> = ({
   tableConfig,
+  exportColumns,
   result
 }) => {
-  const [dataCopy, setDataCopy] = useState<StudentColunm[][]>([])
+  const [dataCopy, setDataCopy] = useState<XlsxData[][]>([])
 
-  const [tableColumn, setTableColunm] = useState([
-    {
-      title: '姓名',
-      dataIndex: String(tableConfig.nameIndex),
-      key: String(tableConfig.nameIndex),
-    },
-    {
-      title: '电话',
-      dataIndex: 3,
-      key: 3,
-    },
-    {
-      title: '操作',
-      dataIndex: '',
-      key: 'x',
-      render: (_, record) => (
-        <Button onClick={() => handleMove(record)}>移动</Button>
-      ),
-    },
-  ])
-
-  function findClassByStudentId(studentId: string | number) {
+  function findClassByStudentId(studentId: string) {
     const info: Pick<MoveModalProps, 'currentClass' | 'students' | 'student' | 'otherClass'> = {
       currentClass: 0,
-      student: {},
+      student: {
+        student_id: ''
+      },
       otherClass: [],
       students: []
     }
@@ -103,12 +85,13 @@ const ResultAdjust: React.FC<ResultAdjustProps> = ({
 
     dataCopy.forEach((studentClass, index) => {
       const studentDetail = studentClass.find(i => i.student_id === studentId)
-      console.log('🚀 ~ file: resultAdjust.tsx:105 ~ dataCopy.forEach ~ studentClass:', studentClass, studentDetail)
       if (studentDetail) {
         info.student = studentDetail
         info.currentClass = index + 1
         if (studentDetail[tableConfig.togetherIndex]) {
-          info.students = studentClass.filter(i => i.student_id !== studentDetail.student_id && i[tableConfig.togetherIndex] === studentDetail[tableConfig.togetherIndex])
+          info.students = studentClass.
+            filter(i => i.student_id !== studentDetail.student_id && i[tableConfig.togetherIndex] === studentDetail[tableConfig.togetherIndex])
+            .map(i => ({ ...i, isMove: '1' }))
         }
       }
     })
@@ -122,19 +105,14 @@ const ResultAdjust: React.FC<ResultAdjustProps> = ({
     return info
   }
 
-  function handleMove(record: StudentColunm) {
+  function handleMove(record: XlsxData) {
     const studentInfo = findClassByStudentId(record.student_id)
-    console.log('🚀 ~ file: resultAdjust.tsx:124 ~ handleMove ~ studentInfo:', studentInfo)
-    // setMoveModelData({
-    //   ...studentInfo,
-    //   students: studentInfo.students.map(student => ({
-    //     ...student,
-    //     isMove: '1'
-    //   })),
-    //   targetClass: 0,
-    //   tableConfig: tableConfig
-    // })
-    // setOpen(true)
+    setMoveModelData({
+      ...studentInfo,
+      targetClass: 0,
+      tableConfig: tableConfig
+    })
+    setOpen(true)
   }
 
   useEffect(() => {
@@ -145,7 +123,9 @@ const ResultAdjust: React.FC<ResultAdjustProps> = ({
   const [open, setOpen] = useState(false)
   const [moveModelData, setMoveModelData] = useState<MoveModalProps>({
     currentClass: 0,
-    student: {},
+    student: {
+      student_id: ''
+    },
     students: [],
     tableConfig: {
       separateIndex: 0,
@@ -162,18 +142,33 @@ const ResultAdjust: React.FC<ResultAdjustProps> = ({
     }
     const dataCache = JSON.parse(JSON.stringify(dataCopy))
     const todoSwitch = [moveModelData.student, ...moveModelData.students.filter(i => i.isMove === '1')]
-    const currnetClass = moveModelData.currentClass
-    const targetClass = moveModelData.targetClass
+    const currnetClass = moveModelData.currentClass - 1
+    const targetClass = moveModelData.targetClass - 1
 
+    const data: XlsxData[] = []
+    dataCopy[currnetClass].forEach(student => {
+      const index = todoSwitch.findIndex(i => i.student_id === student.student_id)
+      if (index === -1) {
+        data.push(student)
+      }
+    })
+    dataCache[currnetClass] = data
     todoSwitch.forEach(student => {
-      dataCache[currnetClass] = dataCopy[currnetClass].filter(i => i.student_id !== student.student_id)
       dataCache[targetClass].push(student)
     })
 
+
     setDataCopy(dataCache)
+    message.success('转移班级成功')
+
+    close()
   }
   const close = () => {
     setOpen(false)
+  }
+
+  const exportBand = () => {
+    writeXlsx({ xlsxColumns: exportColumns, xlsxData: dataCopy })
   }
 
   return (
@@ -191,7 +186,6 @@ const ResultAdjust: React.FC<ResultAdjustProps> = ({
                       <div className="man-count">男生人数：{item.filter(i => i[tableConfig.sexIndex] === '男').length}</div>
                       <div className="woman-count">女生人数：{item.filter(i => i[tableConfig.sexIndex] === '女').length}</div>
                     </div>
-                    {/* columns={tableColumn} */}
                     <Table
                       bordered
                       dataSource={item}
@@ -200,12 +194,13 @@ const ResultAdjust: React.FC<ResultAdjustProps> = ({
                       rowKey="student_id"
                     >
                       <Column title="姓名" dataIndex={tableConfig.nameIndex} key={tableConfig.nameIndex} />
+                      <Column title="性别" dataIndex={tableConfig.sexIndex} key={tableConfig.sexIndex} />
                       <Column title="电话" dataIndex={3} key={3} />
                       <Column
                         title="操作"
                         dataIndex="x"
                         key="x"
-                        render={(_, record) => (
+                        render={(_, record: XlsxData) => (
                           <>
                             <Button onClick={() => handleMove(record)}>移动</Button>
                           </>
@@ -218,6 +213,7 @@ const ResultAdjust: React.FC<ResultAdjustProps> = ({
             })
           }
         </Row>
+
         <Modal
           title="移动学生"
           width={'90vw'}
@@ -229,6 +225,9 @@ const ResultAdjust: React.FC<ResultAdjustProps> = ({
             MoveForm(moveModelData)
           }
         </Modal>
+      </div>
+      <div>
+        <Button onClick={exportBand}>导出</Button>
       </div>
     </>
   )
