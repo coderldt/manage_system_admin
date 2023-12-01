@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Col, Form, Modal, Radio, Row, Select, Table, message } from 'antd'
-import { MoveModalProps, ResultAdjustProps, XlsxData } from '../type.d'
+import { ReactSortable, Sortable, Store } from "react-sortablejs"
+import { MoveModalProps, ResultAdjustProps, SortableClassProps, XlsxData } from '../type.d'
 import { writeXlsx } from '../tool'
 const { Column } = Table
 
@@ -65,6 +66,49 @@ const MoveForm: React.FC<MoveModalProps> = (params) => {
   )
 }
 
+const SortableClass: React.FC<SortableClassProps> = ({ students, tableConfig }) => {
+  const [state, setState] = useState<(XlsxData & { id: string })[]>(students.map(i => {
+    return {
+      ...i,
+      id: i.student_id
+    }
+  }))
+
+  return (
+    <>
+      <table>
+        <tr>
+          <td>姓名</td>
+          <td>性别</td>
+          <td>电话</td>
+        </tr>
+      </table>
+      <ReactSortable
+        list={state}
+        group="groupName"
+        animation={200}
+        delay={2}
+        setList={setState}
+      >
+        {
+          state.map(item => {
+            return (
+              <tr>
+                <td>{item[tableConfig.nameIndex]}</td>
+                <td>{item[tableConfig.sexIndex]}</td>
+                <td>{item[3]}</td>
+              </tr>
+            )
+          })
+        }
+        {/* {state.map((item) => (
+          <div key={item.id}>{item[tableConfig.nameIndex]}</div>
+        ))} */}
+      </ReactSortable>
+    </>
+  )
+}
+
 const ResultAdjust: React.FC<ResultAdjustProps> = ({
   tableConfig,
   exportColumns,
@@ -72,100 +116,10 @@ const ResultAdjust: React.FC<ResultAdjustProps> = ({
 }) => {
   const [dataCopy, setDataCopy] = useState<XlsxData[][]>([])
 
-  function findClassByStudentId(studentId: string) {
-    const info: Pick<MoveModalProps, 'currentClass' | 'students' | 'student' | 'otherClass'> = {
-      currentClass: 0,
-      student: {
-        student_id: ''
-      },
-      otherClass: [],
-      students: []
-    }
-
-
-    dataCopy.forEach((studentClass, index) => {
-      const studentDetail = studentClass.find(i => i.student_id === studentId)
-      if (studentDetail) {
-        info.student = studentDetail
-        info.currentClass = index + 1
-        if (studentDetail[tableConfig.togetherIndex]) {
-          info.students = studentClass.
-            filter(i => i.student_id !== studentDetail.student_id && i[tableConfig.togetherIndex] === studentDetail[tableConfig.togetherIndex])
-            .map(i => ({ ...i, isMove: '1' }))
-        }
-      }
-    })
-
-    for (let index = 0; index < dataCopy.length; index++) {
-      if (index + 1 !== info.currentClass) {
-        info.otherClass.push(index + 1)
-      }
-    }
-
-    return info
-  }
-
-  function handleMove(record: XlsxData) {
-    const studentInfo = findClassByStudentId(record.student_id)
-    setMoveModelData({
-      ...studentInfo,
-      targetClass: 0,
-      tableConfig: tableConfig
-    })
-    setOpen(true)
-  }
-
   useEffect(() => {
     setDataCopy(result)
   }, [result])
 
-  // 弹窗
-  const [open, setOpen] = useState(false)
-  const [moveModelData, setMoveModelData] = useState<MoveModalProps>({
-    currentClass: 0,
-    student: {
-      student_id: ''
-    },
-    students: [],
-    tableConfig: {
-      separateIndex: 0,
-      togetherIndex: 0,
-      sexIndex: 0,
-      nameIndex: 0,
-    },
-    otherClass: [],
-    targetClass: 0,
-  })
-  const handleOk = () => {
-    if (!moveModelData.targetClass) {
-      return message.error('转移班级不能为空')
-    }
-    const dataCache = JSON.parse(JSON.stringify(dataCopy))
-    const todoSwitch = [moveModelData.student, ...moveModelData.students.filter(i => i.isMove === '1')]
-    const currnetClass = moveModelData.currentClass - 1
-    const targetClass = moveModelData.targetClass - 1
-
-    const data: XlsxData[] = []
-    dataCopy[currnetClass].forEach(student => {
-      const index = todoSwitch.findIndex(i => i.student_id === student.student_id)
-      if (index === -1) {
-        data.push(student)
-      }
-    })
-    dataCache[currnetClass] = data
-    todoSwitch.forEach(student => {
-      dataCache[targetClass].push(student)
-    })
-
-
-    setDataCopy(dataCache)
-    message.success('转移班级成功')
-
-    close()
-  }
-  const close = () => {
-    setOpen(false)
-  }
 
   const exportBand = () => {
     writeXlsx({ xlsxColumns: exportColumns, xlsxData: dataCopy })
@@ -186,45 +140,13 @@ const ResultAdjust: React.FC<ResultAdjustProps> = ({
                       <div className="man-count">男生人数：{item.filter(i => i[tableConfig.sexIndex] === '男').length}</div>
                       <div className="woman-count">女生人数：{item.filter(i => i[tableConfig.sexIndex] === '女').length}</div>
                     </div>
-                    <Table
-                      bordered
-                      dataSource={item}
-                      scroll={{ y: 400 }}
-                      pagination={false}
-                      rowKey="student_id"
-                    >
-                      <Column title="姓名" dataIndex={tableConfig.nameIndex} key={tableConfig.nameIndex} />
-                      <Column title="性别" dataIndex={tableConfig.sexIndex} key={tableConfig.sexIndex} />
-                      <Column title="电话" dataIndex={3} key={3} />
-                      <Column
-                        title="操作"
-                        dataIndex="x"
-                        key="x"
-                        render={(_, record: XlsxData) => (
-                          <>
-                            <Button onClick={() => handleMove(record)}>移动</Button>
-                          </>
-                        )}
-                      />
-                    </Table>
+                    <SortableClass students={item} tableConfig={tableConfig} />
                   </div>
                 </Col>
               </>
             })
           }
         </Row>
-
-        <Modal
-          title="移动学生"
-          width={'90vw'}
-          open={open}
-          onOk={handleOk}
-          onCancel={close}
-        >
-          {
-            MoveForm(moveModelData)
-          }
-        </Modal>
       </div>
       <div>
         <Button type='primary' onClick={exportBand}>导出</Button>

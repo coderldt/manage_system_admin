@@ -1,42 +1,78 @@
-import { useState } from 'react'
-import { ReactSortable } from "react-sortablejs"
+import { useEffect, useState } from 'react'
+import { ReactSortable, Sortable, Store } from "react-sortablejs"
 import './test.less'
 interface ItemType {
   id: number
   name: string
 }
 
+const Move = ({ data }: { data: ItemType[] }) => {
+  const [state, setState] = useState<ItemType[]>(data)
+
+  return (
+    <>
+      <ReactSortable
+        list={state}
+        group="groupName"
+        animation={200}
+        delay={2}
+        setList={setState}
+      >
+        {state.map((item) => (
+          <div key={item.id}>{item.name}</div>
+        ))}
+      </ReactSortable>
+    </>
+  )
+}
+
 // https://sortablejs.github.io/Sortable/#simple-list
 
 const Test = () => {
-  const [state, setState] = useState<ItemType[]>([
-    { id: 1, name: "1111" },
-    { id: 2, name: "2222" },
-  ])
-  const [statee, setStatee] = useState<ItemType[]>([
-    { id: 3, name: "3333" },
-    { id: 4, name: "4444" },
-  ])
-  const [stateee, setStateee] = useState<ItemType[]>([
-    { id: 5, name: "5555" },
-    { id: 6, name: "6666" },
-  ])
+  const [state, setState] = useState<{ id: number, name: string }[][]>([])
+
+
+  useEffect(() => {
+    setTimeout(() => {
+      setState([
+        [
+          { id: 1, name: "1111" },
+          { id: 2, name: "2222" },
+        ],
+        [
+          { id: 3, name: "3333" },
+          { id: 4, name: "4444" },
+        ],
+        [
+          { id: 5, name: "5555" },
+          { id: 6, name: "6666" },
+        ]
+      ])
+    }, 1000)
+  }, [])
+  // const [state, setState] = useState<ItemType[]>([
+  //   { id: 1, name: "1111" },
+  //   { id: 2, name: "2222" },
+  // ])
+  // const [statee, setStatee] = useState<ItemType[]>([
+  //   { id: 3, name: "3333" },
+  //   { id: 4, name: "4444" },
+  // ])
+  // const [stateee, setStateee] = useState<ItemType[]>([
+  //   { id: 5, name: "5555" },
+  //   { id: 6, name: "6666" },
+  // ])
 
   return (
     <>
       <div className='test'>
-        <ReactSortable
-          list={state}
-          group="groupName"
-          animation={200}
-          delay={2}
-          setList={setState}
-        >
-          {state.map((item) => (
-            <div key={item.id}>{item.name}</div>
-          ))}
-        </ReactSortable>
-        <ReactSortable
+        {
+          state.map((i, index) => (
+            <Move key={index} data={i} />
+          ))
+        }
+
+        {/* <ReactSortable
           list={statee}
           group="groupName"
           animation={200}
@@ -55,12 +91,12 @@ const Test = () => {
           {stateee.map((item) => (
             <div key={item.id}>{item.name}</div>
           ))}
-        </ReactSortable>
+        </ReactSortable> */}
       </div>
       <div className="source">
         <div className="state">{JSON.stringify(state)}</div>
-        <div className="state">{JSON.stringify(statee)}</div>
-        <div className="statee">{JSON.stringify(stateee)}</div>
+        {/* <div className="state">{JSON.stringify(statee)}</div>
+        <div className="statee">{JSON.stringify(stateee)}</div> */}
       </div>
     </>
   )

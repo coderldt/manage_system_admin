@@ -48,3 +48,8 @@ export interface MoveModalProps {
   tableConfig: TableConfig // 学生信息index
   students: (XlsxData & { isMove: '1' | '0' })[] // 所在一起班级学生
 }
+
+export interface SortableClassProps {
+  students: XlsxData[]
+  tableConfig: TableConfig
+}
