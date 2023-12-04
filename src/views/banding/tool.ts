@@ -1,5 +1,6 @@
 import * as XLSX from 'xlsx'
 import { XlsxColumn, XlsxData, SearchForm, TableConfig } from './type'
+import { togetherColorClass } from './config'
 
 type ReadXlsx = (file: File) => Promise<{ xlsxColumns: XlsxColumn[], xlsxData: XlsxData[] }>
 
@@ -137,6 +138,13 @@ export const brandClass: BrandClass = (tableData, tableColumns, formConfig) => {
         }
         separateStduentsObj[i[separateIndex]].push(i)
       }
+    })
+
+    // 在一起的学生添加背景颜色
+    Object.values(togetherStduentsObj).forEach((value, index) => {
+      value.forEach(student => {
+        student['together_color'] = togetherColorClass[index]
+      })
     })
 
     let maxSeparateStduents = 0

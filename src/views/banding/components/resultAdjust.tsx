@@ -1,72 +1,13 @@
-import React, { useEffect, useState } from 'react'
-import { Button, Col, Form, Modal, Radio, Row, Select, Table, message } from 'antd'
-import { ReactSortable, Sortable, Store } from "react-sortablejs"
-import { MoveModalProps, ResultAdjustProps, SortableClassProps, XlsxData } from '../type.d'
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import { Alert, Button } from 'antd'
+import { ReactSortable } from "react-sortablejs"
+import { ResultAdjustProps, SortableClassProps, XlsxData } from '../type.d'
 import { writeXlsx } from '../tool'
-const { Column } = Table
 
-const MoveForm: React.FC<MoveModalProps> = (params) => {
-  const { student, tableConfig, students, otherClass } = params
-  return (
-    <>
-      <Form
-        name="basic"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        style={{ maxWidth: 600 }}
-        autoComplete="off"
-      >
-        <Form.Item
-          label="移动学生"
-        >
-          {
-            `${student[tableConfig.nameIndex]}-${student[tableConfig.sexIndex]}`
-          }
-        </Form.Item>
+type SortableClassExport = { getStudents: () => (XlsxData & { id: string })[] }
+type SortableClassRef = React.MutableRefObject<SortableClassExport>
 
-        <Form.Item
-          label="相关联(在一班)学生"
-        >
-          <Table
-            bordered
-            dataSource={students.filter(i => i.student_id !== student.student_id)}
-            scroll={{ y: 400 }}
-            pagination={false}
-            rowKey="student_id"
-          >
-            <Column title="姓名" dataIndex={tableConfig.nameIndex} key={tableConfig.nameIndex} />
-            <Column title="性别" dataIndex={tableConfig.sexIndex} key={tableConfig.sexIndex} />
-            <Column
-              title="是否一起转移"
-              dataIndex="x"
-              key="x"
-              render={(_, record: XlsxData & { isMove: '1' | '0' }) => (
-                <>
-                  <Radio.Group defaultValue='1' onChange={(e) => { record.isMove = e.target.value }}>
-                    <Radio value="1"> 是 </Radio>
-                    <Radio value="0"> 否 </Radio>
-                  </Radio.Group>
-                </>
-              )}
-            />
-          </Table>
-        </Form.Item>
-
-        <Form.Item
-          label="转移班级"
-        >
-          <Select
-            defaultValue=""
-            onChange={(val) => { params.targetClass = Number(val) }}
-            options={otherClass.map(i => ({ value: i, label: i }))}
-          />
-        </Form.Item>
-      </Form>
-    </>
-  )
-}
-
-const SortableClass: React.FC<SortableClassProps> = ({ students, tableConfig }) => {
+const SortableClass = forwardRef<SortableClassExport, SortableClassProps>(({ students, tableConfig, index }, ref) => {
   const [state, setState] = useState<(XlsxData & { id: string })[]>(students.map(i => {
     return {
       ...i,
@@ -74,15 +15,22 @@ const SortableClass: React.FC<SortableClassProps> = ({ students, tableConfig }) 
     }
   }))
 
+  useImperativeHandle(ref, () => ({
+    getStudents: () => {
+      return state
+    },
+  }))
+
   return (
     <>
-      <table>
-        <tr>
-          <td>姓名</td>
-          <td>性别</td>
-          <td>电话</td>
-        </tr>
-      </table>
+      <div className="header">
+        <div className="class-name">{`第${index + 1}班`}</div>
+        <div className="count">
+          <div className="total-count">总人数：{state.length}</div>
+          <div className="man-count">男生人数：{state.filter(i => i[tableConfig.sexIndex] === '男').length}</div>
+          <div className="woman-count">女生人数：{state.filter(i => i[tableConfig.sexIndex] === '女').length}</div>
+        </div>
+      </div>
       <ReactSortable
         list={state}
         group="groupName"
@@ -92,22 +40,28 @@ const SortableClass: React.FC<SortableClassProps> = ({ students, tableConfig }) 
       >
         {
           state.map(item => {
+            const isSeparateClass = state.filter(i => {
+              if (i[tableConfig.separateIndex] && item[tableConfig.separateIndex]) {
+                return i[tableConfig.separateIndex] === item[tableConfig.separateIndex]
+              }
+            })
+
             return (
-              <tr>
-                <td>{item[tableConfig.nameIndex]}</td>
-                <td>{item[tableConfig.sexIndex]}</td>
-                <td>{item[3]}</td>
-              </tr>
+              <div
+                className={isSeparateClass.length >= 2 ? 'sortable-students error-class' : 'sortable-students'}
+                style={{ backgroundColor: item.together_color || '#fff' }}
+                key={item.student_id}
+              >
+                {item[tableConfig.nameIndex]} - {item[tableConfig.sexIndex]} - {item[3]}
+              </div>
             )
           })
         }
-        {/* {state.map((item) => (
-          <div key={item.id}>{item[tableConfig.nameIndex]}</div>
-        ))} */}
-      </ReactSortable>
+      </ReactSortable >
     </>
   )
-}
+})
+
 
 const ResultAdjust: React.FC<ResultAdjustProps> = ({
   tableConfig,
@@ -115,41 +69,41 @@ const ResultAdjust: React.FC<ResultAdjustProps> = ({
   result
 }) => {
   const [dataCopy, setDataCopy] = useState<XlsxData[][]>([])
+  const refs = useRef<SortableClassRef[]>([])
 
   useEffect(() => {
+    refs.current = Array.from({ length: result.length }, (_, index) => refs.current[index] || React.createRef())
     setDataCopy(result)
   }, [result])
 
 
   const exportBand = () => {
-    writeXlsx({ xlsxColumns: exportColumns, xlsxData: dataCopy })
+    const result: XlsxData[][] = []
+    refs.current.forEach(value => {
+      result.push(value.current.getStudents())
+    })
+
+    writeXlsx({ xlsxColumns: exportColumns, xlsxData: result })
   }
 
   return (
     <>
       <div className="result-adjust">
-        <Row gutter={20}>
+        <div className="control">
+          <Alert message="颜色一致表示要分在一班，颜色为红色则表示不要分在一班。不做硬性导出要求。" type="info" />
+          <Button type='primary' onClick={exportBand}>导出</Button>
+        </div>
+        <div className="class-list">
           {
             dataCopy.map((item, index) => {
-              return <>
-                <Col xs={24} sm={24} md={12} lg={12} xl={8}>
-                  <div className="class" key={index}>
-                    <div className="class-name">{`第${index + 1}班`}</div>
-                    <div className="count">
-                      <div className="total-count">总人数：{item.length}</div>
-                      <div className="man-count">男生人数：{item.filter(i => i[tableConfig.sexIndex] === '男').length}</div>
-                      <div className="woman-count">女生人数：{item.filter(i => i[tableConfig.sexIndex] === '女').length}</div>
-                    </div>
-                    <SortableClass students={item} tableConfig={tableConfig} />
-                  </div>
-                </Col>
-              </>
+              return (
+                <div className="class" key={index}>
+                  <SortableClass ref={refs.current[index]} students={item} tableConfig={tableConfig} index={index} />
+                </div>
+              )
             })
           }
-        </Row>
-      </div>
-      <div>
-        <Button type='primary' onClick={exportBand}>导出</Button>
+        </div>
       </div>
     </>
   )
