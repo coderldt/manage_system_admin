@@ -17,6 +17,7 @@ export interface XlsxColumn {
 export interface XlsxData {
   [key: number]: string | number
   student_id: string
+  together_color?: string
 }
 
 export type SaveTableData = (xlsxColumns: XlsxColumn[], xlsxData: XlsxData[]) => void
@@ -40,11 +41,8 @@ export interface ResultAdjustProps {
   result: XlsxData[][]
 }
 
-export interface MoveModalProps {
-  currentClass: number // 当前学生所在班级
-  targetClass: number // 跳转目标班级
-  otherClass: number[] // 其他班级数
-  student: XlsxData // 移动当前学生
-  tableConfig: TableConfig // 学生信息index
-  students: (XlsxData & { isMove: '1' | '0' })[] // 所在一起班级学生
+export interface SortableClassProps {
+  students: XlsxData[]
+  tableConfig: TableConfig
+  index: number
 }

@@ -21,7 +21,6 @@ const PageConfig = React.lazy(() => import('@/views/pixel/pageConfig'))
 const NoFind = React.lazy(() => import('@/views/error/404'))
 const NoPermission = React.lazy(() => import('@/views/error/402'))
 const Banding = React.lazy(() => import('@/views/banding'))
-const Test = React.lazy(() => import('@/views/test'))
 
 const Routes = () => {
   const info = useAppState((state) => state.info.info)
@@ -87,10 +86,6 @@ const Routes = () => {
           path: '/tools/banding',
           element: <Banding />
         },
-        {
-          path: '/test',
-          element: <Test />
-        }
       ]
     },
     {

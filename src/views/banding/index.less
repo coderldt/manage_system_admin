@@ -20,25 +20,57 @@
   }
 
   .result-adjust {
-    display: flex;
-    color: #000;
+    .control {
+      display: flex;
+      align-items: center;
 
-    .class {
-      margin-bottom: 20px;
+      .ant-alert {
+        flex: 1;
+        text-align: left;
+        margin-right: 20px;
+      }
+    }
+    .class-list {
+      display: flex;
+      flex-wrap: wrap;
+      color: #000;
 
-      .class-name {
-        font-size: 20px;
-        text-align: center;
+      .class {
+        flex-basis: 300px;
+        margin: 20px 20px 20px 0;
       }
 
-      .count {
-        display: flex;
-        margin: 10px 0;
+      .header {
+        margin-top: 20px;
 
-        > div {
-          flex: 1;
+        .class-name {
+          font-size: 20px;
           text-align: center;
         }
+
+        .count {
+          display: flex;
+          margin: 10px 0;
+
+          > div {
+            flex: 1;
+            text-align: center;
+          }
+        }
+      }
+
+      .sortable-students {
+        padding: 20px;
+        border: 1px solid #eaeaea;
+        border-bottom: 0px;
+
+        &.error-class {
+          background-color: #d63031 !important;
+          color: #fff !important;
+        }
+      }
+      .sortable-students:nth-last-child(1) {
+        border-bottom: 1px solid #eaeaea;
       }
     }
   }
