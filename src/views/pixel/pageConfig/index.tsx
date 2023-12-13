@@ -10,7 +10,7 @@ import Search from './search'
 import './index.less'
 
 const PixelNotice = () => {
-  const { data, isLoading, handleSearch, handleRefrensh } = useTable({ url: request.pixel.pageConfig.list, method: 'post' })
+  const { data, isLoading, handleSearch, handleRefrensh } = useTable<Columns>({ url: request.pixel.pageConfig.list, method: 'post' })
 
   const handleChangeStatus = async (record: Columns) => {
     const res = await ajax.post(request.pixel.pageConfig.changeStatus, {

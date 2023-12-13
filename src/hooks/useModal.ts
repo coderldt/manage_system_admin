@@ -29,7 +29,7 @@ const useModal: UseModalType = ({ props, onOk, onCancel }) => {
     setModalVisible(false)
   }
 
-  const setModalProp = (data: any) => {
+  const setModalProp = () => {
     onOk()
     onCancel()
   }

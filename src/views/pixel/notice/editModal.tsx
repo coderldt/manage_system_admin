@@ -11,7 +11,6 @@ const { TextArea } = Input
 interface Props {
   mode: keyof typeof ModalType
   data?: Columns
-  list: Columns[]
   refrensh: (initPage: boolean) => void
 }
 

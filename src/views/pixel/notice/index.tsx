@@ -24,7 +24,7 @@ const PixelNotice = () => {
   //     pages
   //   }
   // }
-  const { data, isLoading, handleSearch, handleRefrensh, handlePageChange } = useTable({ url: request.pixel.notice.list, method: 'post' })
+  const { data, isLoading, handleSearch, handleRefrensh, handlePageChange } = useTable<Columns>({ url: request.pixel.notice.list, method: 'post' })
 
   const handleDelete = async (record: Columns) => {
     const res = await ajax.post(request.pixel.notice.del, { notice_id: record.notice_id })
@@ -73,8 +73,8 @@ const PixelNotice = () => {
       dataIndex: 'address',
       render: (_, record) => (
         <Space>
-          <EditModal mode='edit' data={record} list={data} refrensh={refrensh} />
-          <EditModal mode='detail' data={record} list={data} refrensh={refrensh} />
+          <EditModal mode='edit' data={record} refrensh={refrensh} />
+          <EditModal mode='detail' data={record} refrensh={refrensh} />
           <Popconfirm
             title="是否删除该项"
             onConfirm={() => handleDelete(record)}
@@ -97,7 +97,7 @@ const PixelNotice = () => {
           </>
         }
         TableRight={
-          <EditModal mode='add' list={data} refrensh={refrensh} />
+          <EditModal mode='add' refrensh={refrensh} />
         }
         Table={
           <>

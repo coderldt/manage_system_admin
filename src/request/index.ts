@@ -1,6 +1,8 @@
 
 const BASE_URL = '/systemApi'
 
+const isDev = false
+
 const apiUrl = {
   callPlan: {
     list: `${BASE_URL}/callPlaning/list`,
@@ -46,7 +48,22 @@ const apiUrl = {
     pageConfig: {
       list: `${BASE_URL}/pixel/pageConfig/list`,
       changeStatus: `${BASE_URL}/pixel/pageConfig/changeStatus`,
+    },
+    cartoniza: {
+      getFirstList: `${BASE_URL}/pixel/cartoniza/getFirstList`,
+      list: `${BASE_URL}/pixel/cartoniza/list`,
+      add: `${BASE_URL}/pixel/cartoniza/add`,
+      update: `${BASE_URL}/pixel/cartoniza/update`,
+      detail: `${BASE_URL}/pixel/cartoniza/detail`,
+      uploadCartonizaImg: `${BASE_URL}/pixel/cartoniza/uploadCartonizaImg`,
+      asyncChildImg: `${BASE_URL}/pixel/cartoniza/asyncChildImg`,
+      getAsyncImgResult: `${BASE_URL}/pixel/cartoniza/getAsyncImgResult`,
     }
+  },
+  // 上传图片，预览图片baseurl
+  imgUpload: {
+    upload: `${BASE_URL}/upload`,
+    imgPreviewUrl: isDev ? 'http://127.0.0.1:8010' : 'https://litt.cloud'
   }
 }
 

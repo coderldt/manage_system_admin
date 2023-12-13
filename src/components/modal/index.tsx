@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, Modal } from 'antd'
+import { Modal } from 'antd'
 import { ModalProps } from './type.d'
 
 const CustomModal: React.FC<ModalProps> = ({ visible, title, content, onOk, onCancel }) => {

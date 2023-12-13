@@ -13,7 +13,7 @@ const { Search } = Input
 
 const Role = () => {
   const [currentRole, setCurrentRole] = useState<string | number>('')
-  const { data, handleRefrensh } = useTable({ url: request.sys.role.list, method: 'post', isPages: false })
+  const { data, handleRefrensh } = useTable<any>({ url: request.sys.role.list, method: 'post', isPages: false })
 
   const handleDelete = async (record: Columns) => {
     const res = await ajax.post(request.sys.role.delete, { role_id: record.role_id })

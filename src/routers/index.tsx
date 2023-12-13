@@ -17,6 +17,7 @@ const Role = React.lazy(() => import('@/views/sys/role'))
 
 const Notice = React.lazy(() => import('@/views/pixel/notice'))
 const PageConfig = React.lazy(() => import('@/views/pixel/pageConfig'))
+const Cartoniza = React.lazy(() => import('@/views/pixel/cartoniza'))
 
 const NoFind = React.lazy(() => import('@/views/error/404'))
 const NoPermission = React.lazy(() => import('@/views/error/402'))
@@ -79,6 +80,10 @@ const Routes = () => {
             {
               path: 'pageConfig',
               element: <PageConfig />
+            },
+            {
+              path: 'cartoniza',
+              element: <Cartoniza />
             },
           ]
         },

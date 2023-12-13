@@ -7,22 +7,22 @@ interface Params {
   [key: string]: any
 }
 
-interface Props {
+export interface Props<T> {
   url: string,
   method: 'get' | 'post'
   form?: Params
   pages?: Pages
   isPages?: boolean
   beforeRequest?: (params: Params) => Params
-  afterRequest?: (params: any) => { data: any, pages: Pages }
+  afterRequest?: (params: any) => { data: T[], pages: Pages }
 }
 
 interface Options {
   immediate?: boolean
 }
 
-interface Result {
-  data: any[]
+interface Result<T> {
+  data: T[]
   pages: Pages
   isLoading: boolean
   handleSearch: (params: Params) => void
@@ -36,10 +36,10 @@ const defaultPages: Pages = {
   total: 0
 }
 
-const useTable = (props: Props, options: Options = { immediate: true }): Result => {
+const useTable = <T>(props: Props<T>, options: Options = { immediate: true }): Result<T> => {
 
   const [pages, setPages] = useState({ ...defaultPages, ...props.pages })
-  const [data, setData] = useState([])
+  const [data, setData] = useState<T[]>([])
   const [form, setForm] = useState({})
   const [isLoading, setIsLoading] = useState(false)
 

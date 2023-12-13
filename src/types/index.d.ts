@@ -1,4 +1,5 @@
 import type { Status } from '@/enum'
+import { type } from 'os'
 
 export interface Pages {
   page?: number;
@@ -15,8 +16,10 @@ export interface Columns {
 }
 
 export interface CommonTableListRes<T> {
-  page?: number | null;
-  pageSize?: number | null;
-  total?: number | null;
+  page?: number;
+  pageSize?: number;
+  total?: number;
   list: T[]
 }
+
+export type CommonTableAfterResuest<T> = (params: CommonTableListRes<T>) => { data: T[], pages: Pages }

@@ -12,7 +12,7 @@ import './index.less'
 import type { Columns } from './types'
 
 const User = () => {
-  const { data, pages, isLoading, handleSearch, handleRefrensh, handlePageChange } = useTable({ url: apiUrl.sys.user.list, method: 'post' })
+  const { data, pages, isLoading, handleSearch, handleRefrensh, handlePageChange } = useTable<Columns>({ url: apiUrl.sys.user.list, method: 'post' })
 
   const onPageChange: PaginationProps['onChange'] = (page, pageSize) => {
     handlePageChange({ page, pageSize })
