@@ -1,7 +1,7 @@
 /**
  * 设置 storage
  * @param key
- * @param value 
+ * @param value
  */
 export const setStore = <T>(key: string, value: T) => {
   localStorage.setItem(key, JSON.stringify(value))
@@ -9,8 +9,8 @@ export const setStore = <T>(key: string, value: T) => {
 
 /**
  * 获取 storage
- * @param key 
- * @returns 
+ * @param key
+ * @returns
  */
 export const getStore = (key: string): any => {
   const val = localStorage.getItem(key)
