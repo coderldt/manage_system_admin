@@ -1,5 +1,5 @@
 
-const BASE_URL = '/api'
+const BASE_URL = '/systemAdminApi'
 
 const isDev = false
 
