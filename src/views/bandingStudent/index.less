@@ -1,0 +1,77 @@
+.banding-class {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 20px;
+  .content {
+    flex: 1;
+    margin: 20px 0;
+  }
+
+  .control {
+    text-align: center;
+  }
+
+  .title {
+    margin: 15px 0;
+    color: #000;
+    padding: 0 10px;
+    border-left: 4px solid rgb(101, 152, 202);
+  }
+
+  .result-adjust {
+    .control {
+      display: flex;
+      align-items: center;
+
+      .ant-alert {
+        flex: 1;
+        text-align: left;
+        margin-right: 20px;
+      }
+    }
+    .class-list {
+      display: flex;
+      flex-wrap: wrap;
+      color: #000;
+
+      .class {
+        flex-basis: 300px;
+        margin: 20px 20px 20px 0;
+      }
+
+      .header {
+        margin-top: 20px;
+
+        .class-name {
+          font-size: 20px;
+          text-align: center;
+        }
+
+        .count {
+          display: flex;
+          margin: 10px 0;
+
+          > div {
+            flex: 1;
+            text-align: center;
+          }
+        }
+      }
+
+      .sortable-students {
+        padding: 20px;
+        border: 1px solid #eaeaea;
+        border-bottom: 0px;
+
+        &.error-class {
+          background-color: #d63031 !important;
+          color: #fff !important;
+        }
+      }
+      .sortable-students:nth-last-child(1) {
+        border-bottom: 1px solid #eaeaea;
+      }
+    }
+  }
+}

@@ -17,41 +17,188 @@ export const readXlsx: ReadXlsx = (file) => {
         const workbook = XLSX.read(content, { type: 'binary' })
 
         const worksheet = workbook.Sheets[workbook.SheetNames[0]]
-        const sheetData = XLSX.utils.sheet_to_json(worksheet, { header: 1, range: 1 }) as string[][]
+        const sheetData = XLSX.utils.sheet_to_json(worksheet, { header: 1, range: 0 }) as string[][]
 
-        sheetData[0].forEach((header, index) => {
-          xlsxColumns.push({ key: index, title: header, dataIndex: index, id: index })
-        })
+        console.log('sheetData-表头', sheetData[0])
+        console.log('sheetData-数据', sheetData.slice(1))
 
-        sheetData.slice(1).forEach((row, idx) => {
-          const obj: XlsxData = { student_id: `student_${idx}` }
-          row.forEach((row, index) => {
-            obj[index] = row
-          })
-
-          if (Object.keys(obj).length > 1) {
-            xlsxData.push(obj)
+        const filterData = sheetData.slice(1).filter(data => {
+          if (data[1] === '小学三年级') {
+            if (['7班', '8班'].includes(data[2])) {
+              return data
+            }
+          } else if (data[1] === '小学五年级') {
+            if (['5班', '6班'].includes(data[2])) {
+              return data
+            }
           }
         })
+
+        console.log('filterData', filterData)
+
+        const noIdCard = filterData.filter(data => {
+          if (!data[4]) {
+            return data
+          }
+        })
+
+        console.log('noIdCard', noIdCard)
+
+
+        const worksheet1 = workbook.Sheets[workbook.SheetNames[1]]
+        const sheetData1 = XLSX.utils.sheet_to_json(worksheet1, { header: 1, range: 0 }) as string[][]
+
+        console.log('sheetData1', sheetData1.slice(1))
+        const sheetData1Data = sheetData1.slice(1)
+
+        const noOtherData = []
+        filterData.forEach(i => {
+          const detail = sheetData1Data.find(data => data[2] === i[4])
+
+          if (detail) {
+            i.otherData = detail
+          } else {
+            i.otherData = null
+            noOtherData.push(i)
+          }
+        })
+
+        const finalData = []
+        filterData.forEach(i => {
+          const item = []
+          item.push(sheetData[0])
+          item.push(i)
+          if (i.otherData) {
+            item.push(sheetData1[0].slice(3))
+            item.push(i.otherData.slice(3))
+          }
+
+          finalData.push(item)
+        })
+
+        console.log('finalyData', finalData)
+        console.log('finalyData[0', finalData[0])
+
+        let idx = 1
+        const addXlsx = (DataData) => {
+          console.log('DataData', DataData)
+
+          const workbook = XLSX.utils.book_new()
+
+          DataData.forEach((data, index) => {
+            const exportData = []
+            const sheetName = `${data[1][1]}-${data[1][2]}`
+            const data1 = {}
+            const data2 = {}
+            const data3 = {}
+            data[0].forEach((i, index) => {
+              data1[i] = data[1][index]
+              if (data[2]) {
+                data2[i] = data[2][index]
+              }
+              if (data[3]) {
+                data3[i] = data[3][index]
+              }
+            })
+            exportData.push(data1)
+            if (Object.keys(data2).length) {
+              exportData.push(data2)
+            }
+            if (Object.keys(data3).length) {
+              exportData.push(data3)
+            }
+
+            const worksheet = XLSX.utils.json_to_sheet(exportData)
+            XLSX.utils.book_append_sheet(workbook, worksheet, `${sheetName}-${idx++}`)
+          })
+
+          const today = new Date()
+          const filename = "data_" + today.getFullYear() + (today.getMonth() + 1) + today.getDate() + ".xlsx"
+
+          XLSX.writeFile(workbook, filename)
+
+
+          // console.log('fileName', fileName)
+          // console.log('exportData', exportData)
+
+
+//           const worksheet = XLSX.utils.json_to_sheet(exportData)
+//
+//           XLSX.utils.book_append_sheet(workbook, worksheet, `sheet1`)
+//
+//           XLSX.writeFile(workbook, `${fileName}.xlsx`)
+
+  //         Object.entries(xlsxData).forEach(([key, value]) => {
+  //           const exportData: { [key: string]: string }[] = []
+  //           value.forEach(data => {
+  //             const obj: { [key: string]: string } = {}
+  //             xlsxColumns.forEach(k => {
+  //               obj[k.title] = String(data[k.dataIndex] || ' ')
+  //             })
+  //             exportData.push(obj)
+  //           })
+  //           const worksheet = XLSX.utils.json_to_sheet(exportData)
+  //
+  //           XLSX.utils.book_append_sheet(workbook, worksheet, `1.${Number(key) + 1}`)
+  //         })
+  //
+  //         const today = new Date()
+  //         const filename = "data_" + today.getFullYear() + (today.getMonth() + 1) + today.getDate() + ".xlsx"
+  //
+  //         XLSX.writeFile(workbook, filename)
+        }
+
+        // const grouped = []
+        // for (let i = 0; i < finalData.length; i += 9) {
+        //   grouped.push(finalData.slice(i, i += 9))
+        // }
+
+        addXlsx(finalData)
+        // grouped.forEach(i => {
+        //   setTimeout(() => {
+        //     i.forEach(item => {
+        //       addXlsx(item)
+        //     })
+        //   }, 1000)
+        // })
+
+
+//         sheetData[0].forEach((header, index) => {
+//           xlsxColumns.push({ key: index, title: header, dataIndex: index, id: index })
+//         })
+//
+//         sheetData.slice(1).forEach((row, idx) => {
+//           const obj: XlsxData = { student_id: `student_${idx}` }
+//           row.forEach((row, index) => {
+//             obj[index] = row
+//           })
+//
+//           if (Object.keys(obj).length > 1) {
+//             xlsxData.push(obj)
+//           }
+//         })
       }
 
       console.log('xlsxColumns', xlsxColumns)
       console.log('xlsxData', xlsxData)
 
-      resolve({
-        xlsxColumns,
-        xlsxData
-      })
+      // resolve({
+      //   xlsxColumns,
+      //   xlsxData
+      // })
     }
 
     reader.readAsBinaryString(file)
   })
 }
 
-export const writeXlsx = ({ xlsxColumns, xlsxData }: { xlsxColumns: XlsxColumn[], xlsxData: XlsxData[][] }) => {
-  const workbook = XLSX.utils.book_new()
+export const writeXlsx = ({ xlsxColumns, xlsxData, cb }: { xlsxColumns: XlsxColumn[], xlsxData: XlsxData[][] }) => {
+  console.log('111')
 
+  const workbook = XLSX.utils.book_new()
+  const exportDataCopy = []
   Object.entries(xlsxData).forEach(([key, value]) => {
+    debugger
     const exportData: { [key: string]: string }[] = []
     value.forEach(data => {
       const obj: { [key: string]: string } = {}
@@ -59,13 +206,16 @@ export const writeXlsx = ({ xlsxColumns, xlsxData }: { xlsxColumns: XlsxColumn[]
         obj[k.title] = String(data[k.dataIndex] || ' ')
       })
       exportData.push(obj)
+      exportDataCopy.push(obj)
     })
-    console.log('exportData', exportData)
 
     const worksheet = XLSX.utils.json_to_sheet(exportData)
 
+    cb(exportData)
+
     XLSX.utils.book_append_sheet(workbook, worksheet, `1.${Number(key) + 1}`)
   })
+  console.log('exportDataCopy', exportDataCopy)
 
   const today = new Date()
   const filename = "data_" + today.getFullYear() + (today.getMonth() + 1) + today.getDate() + ".xlsx"
